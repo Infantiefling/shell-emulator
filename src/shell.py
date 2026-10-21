@@ -1,8 +1,8 @@
-"""Command parsing and first-stage shell stubs."""
+"""Разбор команд и заглушки первого этапа."""
 
 
 def parse_command(line):
-    """Split input into a command and its arguments."""
+    """Разделить ввод на команду и аргументы."""
     parts = line.split()
     if not parts:
         return "", []
@@ -10,7 +10,7 @@ def parse_command(line):
 
 
 def execute(line):
-    """Return command output and whether the application should close."""
+    """Вернуть результат команды и признак завершения программы."""
     command, args = parse_command(line)
     if not command:
         return "", False

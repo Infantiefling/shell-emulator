@@ -1,0 +1,7 @@
+# Startup demo for stage 2
+ls
+ls documents
+cd projects
+cd one two
+unknown
+exit now

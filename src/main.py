@@ -1,16 +1,17 @@
-"""Tkinter GUI for the shell emulator."""
+"""Графический интерфейс эмулятора на Tkinter."""
 
 import getpass
 import socket
 import tkinter as tk
 
+from config import load_config, read_startup_script
 from shell import execute
 
 
 class ShellWindow:
-    """Simple interactive shell window."""
+    """Окно эмулятора с поддержкой стартового скрипта."""
 
-    def __init__(self, root):
+    def __init__(self, root, config):
         self.root = root
         self.user = getpass.getuser()
         self.host = socket.gethostname()
@@ -23,30 +24,60 @@ class ShellWindow:
         self.entry.pack(fill="x", padx=8, pady=(0, 8))
         self.entry.bind("<Return>", self.on_enter)
         self.entry.focus_set()
-        self.write("Shell emulator (stage 1)\n")
+        self.write("Shell emulator (stage 2)\n")
+        self.show_config(config)
+        if config.script:
+            root.after(0, self.run_script, config.script)
 
     def write(self, text):
-        """Append text to the read-only terminal transcript."""
+        """Добавить текст в область вывода команд."""
         self.output.configure(state="normal")
         self.output.insert("end", text)
         self.output.configure(state="disabled")
         self.output.see("end")
 
-    def on_enter(self, _event=None):
-        """Execute the entered command and display its result."""
-        line = self.entry.get()
-        self.entry.delete(0, "end")
+    def show_config(self, config):
+        """Показать итоговые параметры запуска."""
+        self.write(f"VFS: {config.vfs}\n")
+        self.write(f"Script: {config.script}\n")
+        self.write(f"Config: {config.config}\n")
+
+    def process_line(self, line):
+        """Показать команду и результат её выполнения."""
         self.write(f"{self.user}@{self.host}:~$ {line}\n")
         result, should_exit = execute(line)
         if result:
             self.write(result + "\n")
         if should_exit:
             self.root.destroy()
+        return should_exit
+
+    def on_enter(self, _event=None):
+        """Обработать команду, введённую в окне."""
+        line = self.entry.get()
+        self.entry.delete(0, "end")
+        self.process_line(line)
+
+    def run_script(self, path):
+        """Выполнить команды скрипта по порядку в окне."""
+        try:
+            commands = read_startup_script(path)
+        except ValueError as error:
+            self.write(f"{error}\n")
+            return
+        for line in commands:
+            if self.process_line(line):
+                return
 
 
 def main():
+    """Загрузить конфигурацию и запустить приложение."""
+    try:
+        config = load_config()
+    except ValueError as error:
+        raise SystemExit(str(error)) from error
     root = tk.Tk()
-    ShellWindow(root)
+    ShellWindow(root, config)
     root.mainloop()
 
 

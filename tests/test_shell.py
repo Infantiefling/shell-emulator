@@ -1,4 +1,4 @@
-"""Tests for command parsing and execution."""
+"""Тесты разбора и выполнения команд."""
 
 import unittest
 
@@ -6,7 +6,7 @@ from src.shell import execute, parse_command
 
 
 class ParserTests(unittest.TestCase):
-    """Check splitting user input into commands and arguments."""
+    """Проверить разделение ввода на команду и аргументы."""
 
     def test_command_without_arguments(self):
         self.assertEqual(parse_command("ls"), ("ls", []))
@@ -28,7 +28,7 @@ class ParserTests(unittest.TestCase):
 
 
 class ShellTests(unittest.TestCase):
-    """Check shell command results and exit status."""
+    """Проверить результаты команд и признак завершения."""
 
     def test_empty_input(self):
         self.assertEqual(execute("   "), ("", False))

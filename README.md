@@ -1,49 +1,149 @@
-# Shell Emulator — Variant 25
+# Shell Emulator
 
-A Python GUI prototype of a UNIX-like shell, built with Tkinter.
-This repository implements **stage 1 (REPL)** of the assignment.
+Эмулятор командной оболочки UNIX-подобной операционной системы, разработанный на Python с использованием библиотеки Tkinter.
 
-## Requirements
+Практическая работа по дисциплине «Конфигурационное управление», вариант №25.
 
-- Python 3.13 with Tkinter (standard library)
-- Windows for the provided `run.bat` launcher
+## Описание проекта
 
-## Run
+Программа имитирует работу командной строки UNIX-подобной операционной системы в графическом интерфейсе.
 
-From the repository root:
+Реализованы следующие возможности:
+
+- Ввод и обработка команд в интерактивном режиме.
+- Разделение введённой строки на команду и аргументы.
+- Обработка неизвестных команд и некорректных аргументов.
+- Загрузка параметров запуска из командной строки и XML-файла.
+- Выполнение команд из стартового скрипта.
+- Отображение команд и результатов их выполнения в окне эмулятора.
+
+На текущем этапе команды `ls` и `cd` реализованы в виде заглушек. Загрузка виртуальной файловой системы (VFS) будет добавлена на следующем этапе.
+
+## Требования
+
+- Python 3.13
+- Библиотека Tkinter (входит в стандартную поставку Python)
+- Windows для запуска `.bat`-скриптов
+
+Дополнительные библиотеки не требуются.
+
+## Запуск программы
+
+Для запуска эмулятора необходимо выполнить команду из корневой папки проекта:
 
 ```powershell
 .\run.bat
 ```
 
-Or run `py src/main.py`.
+Для завершения работы введите команду `exit` в окне эмулятора.
 
-## Commands and behavior
+### Параметры командной строки
 
-- `ls [path]`: stage-1 stub; prints its name and parsed arguments.
-- `cd [path]`: stage-1 stub; prints its name and parsed arguments.
-- `exit`: closes the window; arguments are rejected.
-- Unknown commands produce an error.
-- The parser splits input on whitespace; quoting is not supported at this stage.
-- `ls` and `cd` accept at most one argument in this prototype.
+| Параметр | Назначение |
+|---|---|
+| `--vfs` | Путь к файлу виртуальной файловой системы |
+| `--script` | Путь к стартовому скрипту |
+| `--config` | Путь к XML-файлу конфигурации |
 
-## Tests
+Все параметры являются необязательными.
+
+Пример запуска с аргументами:
+
+```powershell
+.\run.bat --vfs disk.csv --script scripts/demo.txt
+```
+
+## Конфигурационный файл
+
+Эмулятор поддерживает загрузку параметров из XML-файла.
+
+Пример содержимого `config.xml`:
+
+```xml
+<config>
+    <vfs>examples/sample.csv</vfs>
+    <script>scripts/demo.txt</script>
+</config>
+```
+
+Для запуска с конфигурационным файлом:
+
+```powershell
+.\run.bat --config config.xml
+```
+
+Если параметры указаны одновременно в командной строке и XML-файле, **приоритет имеют значения из XML**.
+
+Например:
+
+```powershell
+.\run.bat --vfs other.csv --config config.xml
+```
+
+В данном случае будет выбран путь `examples/sample.csv`, указанный в XML-файле.
+
+При запуске эмулятор отображает итоговые значения параметров для отладки.
+
+## Поддерживаемые команды
+
+| Команда | Назначение |
+|---|---|
+| `ls [path]` | Заглушка, выводит имя команды и аргументы |
+| `cd [path]` | Заглушка, выводит имя команды и аргументы |
+| `exit` | Завершает работу эмулятора |
+
+Команды `ls` и `cd` на текущем этапе принимают не более одного аргумента.
+
+При вводе неизвестной команды или неверного количества аргументов выводится сообщение об ошибке.
+
+### Пример использования
+
+```text
+ls
+ls documents
+cd projects
+cd one two
+unknown
+exit
+```
+
+## Стартовые скрипты
+
+Стартовый скрипт представляет собой текстовый файл, содержащий по одной команде на строку.
+
+Пример `scripts/demo.txt`:
+
+```text
+# Проверка команд эмулятора
+ls
+ls documents
+cd projects
+cd one two
+unknown
+exit now
+```
+
+Пустые строки и строки, начинающиеся с `#`, игнорируются.
+
+Команды выполняются последовательно. В окне отображаются как сами команды, так и результаты их выполнения.
+
+Ошибки отдельных команд не прерывают выполнение скрипта. Корректная команда `exit` завершает работу приложения.
+
+Для проверки параметров запуска предусмотрены демонстрационные `.bat`-скрипты в папке `scripts`:
+
+- `01_default.bat` — запуск без параметров.
+- `02_cli.bat` — параметры VFS и стартового скрипта.
+- `03_xml_override.bat` — проверка приоритета XML.
+- `04_config_only.bat` — запуск с XML-конфигурацией.
+- `05_script_only.bat` — запуск со стартовым скриптом.
+- `06_vfs_only.bat` — запуск с указанием VFS.
+
+## Тестирование
+
+Для запуска автоматических тестов из корневой папки проекта:
 
 ```powershell
 py -m unittest discover -s tests -v
 ```
 
-## Interactive examples
-
-```text
-ls
-ls docs
-cd projects
-cd a b
-notacommand
-exit now
-exit
-```
-
-The window title is constructed from the current OS username and hostname.
-Later stages will add configuration, VFS, and real command behavior.
+Тесты проверяют разбор команд, выполнение заглушек, обработку ошибок, чтение XML-конфигурации, приоритет параметров и обработку стартовых скриптов.
