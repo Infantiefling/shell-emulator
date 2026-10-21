@@ -1,0 +1,9 @@
+path,type,content
+/,dir,
+/home,dir,
+/home/user,dir,
+/home/user/docs,dir,
+/home/user/docs/notes.txt,file,SGVsbG8gZnJvbSBWRlMhCg==
+/home/user/docs/photo.bin,file,AP+AAQ==
+/etc,dir,
+/etc/config.txt,file,Y29uZmlnPXRydWUK
