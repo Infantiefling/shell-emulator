@@ -33,8 +33,6 @@ class ShellTests(unittest.TestCase):
     def test_empty_input(self):
         self.assertEqual(self.shell.execute("   "), ("", False))
 
-
-
     def test_unknown_command(self):
         self.assertEqual(self.shell.execute("oops"),
                          ("oops: command not found", False))

@@ -1,0 +1,24 @@
+# Этап 5: перемещение и удаление в памяти
+pwd
+ls /home/user
+mv /home/user/docs/notes.txt /home/user/notes.txt
+ls /home/user
+mv /home/user/docs /home/user/archive
+ls /home/user
+ls /home/user/archive
+rmdir /home/user/archive
+mv /home/user/archive/photo.bin /home/user/photo.bin
+rmdir /home/user/archive
+ls /home/user
+# Ошибки команд
+rmdir /home/user
+rmdir /home/user/notes.txt
+rmdir /missing
+mv /missing /home/user/no.txt
+mv /home/user /home/user/folder
+mv / /root
+mv /home/user/photo.bin /etc/config.txt
+mv /home/user/notes.txt /missing/notes.txt
+mv /home/user/notes.txt
+rmdir
+history

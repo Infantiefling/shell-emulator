@@ -27,7 +27,7 @@ class ShellWindow:
         self.entry.pack(fill="x", padx=8, pady=(0, 8))
         self.entry.bind("<Return>", self.on_enter)
         self.entry.focus_set()
-        self.write("Shell emulator (stage 4)\n")
+        self.write("Shell emulator (stage 5)\n")
         self.show_config(config)
         self.show_vfs()
         if config.script:
