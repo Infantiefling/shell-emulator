@@ -1,0 +1,24 @@
+# Этап 4: команды навигации, размеров и истории
+pwd
+ls
+ls /home
+cd /home/user
+pwd
+ls
+ls docs
+du docs
+du .
+cd docs
+pwd
+ls
+cd ..
+pwd
+history
+# Обработка ошибок
+ls /missing
+cd /etc/config.txt
+cd /missing
+du /missing
+pwd extra
+unknown
+exit now

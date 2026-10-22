@@ -5,7 +5,7 @@ import socket
 import tkinter as tk
 
 from config import load_config, read_startup_script
-from shell import execute
+from shell import Shell
 from vfs import load_vfs, VFSError
 
 
@@ -15,6 +15,7 @@ class ShellWindow:
     def __init__(self, root, config, vfs):
         self.root = root
         self.vfs = vfs
+        self.shell = Shell(vfs)
         self.user = getpass.getuser()
         self.host = socket.gethostname()
         root.title(f"Эмулятор - [{self.user}@{self.host}]")
@@ -26,7 +27,7 @@ class ShellWindow:
         self.entry.pack(fill="x", padx=8, pady=(0, 8))
         self.entry.bind("<Return>", self.on_enter)
         self.entry.focus_set()
-        self.write("Shell emulator (stage 3)\n")
+        self.write("Shell emulator (stage 4)\n")
         self.show_config(config)
         self.show_vfs()
         if config.script:
@@ -53,8 +54,8 @@ class ShellWindow:
 
     def process_line(self, line):
         """Показать команду и результат её выполнения."""
-        self.write(f"{self.user}@{self.host}:~$ {line}\n")
-        result, should_exit = execute(line)
+        self.write(f"{self.user}@{self.host}:{self.shell.cwd}$ {line}\n")
+        result, should_exit = self.shell.execute(line)
         if result:
             self.write(result + "\n")
         if should_exit:

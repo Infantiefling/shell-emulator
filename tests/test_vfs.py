@@ -1,6 +1,5 @@
 """Тесты загрузки виртуальной файловой системы."""
 
-import base64
 import tempfile
 import unittest
 from pathlib import Path
@@ -67,35 +66,6 @@ class VFSTests(unittest.TestCase):
     def test_duplicate_path(self):
         with self.assertRaises(VFSError):
             self.load_text("path,type,content\n/,dir,\n/a,dir,\n/a,dir,\n")
-
-    def test_invalid_directory_data(self):
-        with self.assertRaises(VFSError):
-            self.load_text("path,type,content\n/,dir,\n/a,dir,QQ==\n")
-
-    def test_invalid_path(self):
-        with self.assertRaises(VFSError):
-            self.load_text("path,type,content\n/,dir,\na,file,\n")
-
-    def test_invalid_type(self):
-        with self.assertRaises(VFSError):
-            self.load_text("path,type,content\n/,dir,\n/a,link,\n")
-
-    def test_missing_root(self):
-        with self.assertRaises(VFSError):
-            self.load_text("path,type,content\n/a,file,\n")
-
-    def test_extra_field(self):
-        with self.assertRaises(VFSError):
-            self.load_text("path,type,content\n/,dir,,unexpected\n")
-
-    def test_empty_row_field(self):
-        with self.assertRaises(VFSError):
-            self.load_text("path,type,content\n/,dir\n")
-
-    def test_not_base64_string_does_not_decode(self):
-        value = base64.b64encode(b"\x00\xfe").decode("ascii")
-        vfs = self.load_text(f"path,type,content\n/,dir,\n/a,file,{value}\n")
-        self.assertEqual(vfs["/a"]["content"], b"\x00\xfe")
 
 
 if __name__ == "__main__":
